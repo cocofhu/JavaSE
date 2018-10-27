@@ -20,3 +20,8 @@
 /net/
 /regex/
 /thread/
+/jni/
+/ExceptionTest.class
+/ExceptionTest$T.class
+/ExceptionTest$TAdapter.class
+/ExceptionTest$ConcreteT.class
