@@ -38,19 +38,22 @@ public class HierarchicalLockTest {
 		public void lock() {	// synchronized 加在这里将造成死锁
 			check();
 			// 保证数据的一致性(如果创建层次号相同的对象,这里将可能死锁)
+			lock.lock();
 			synchronized (this) {
 				Long backup = threadHierarchical.get() ;
 				if(backup == null) backup = Long.MAX_VALUE;
 				hierarchicalBackUp.push(backup);
 				threadHierarchical.set(hierarchical);
-				lock.lock();
 			}
 		}
 		
 		@Override
 		public void unlock() { // 不会存在数据不一致
-			threadHierarchical.set(hierarchicalBackUp.pop());
 			lock.unlock();
+			synchronized (this) {
+				threadHierarchical.set(hierarchicalBackUp.pop());
+			}
+			
 		}
 		@Override
 		public boolean tryLock() {
