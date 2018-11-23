@@ -38,7 +38,7 @@ public class CamTest {
                 window.dispose();
             }
         });
-        // window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final JButton button = new JButton("截图");
         window.add(panel, BorderLayout.CENTER);
         window.add(button, BorderLayout.SOUTH);
