@@ -20,6 +20,8 @@ public class HierarchicalLockTest {
 		private Lock lock = new ReentrantLock();
 		private final long hierarchical ;
 		private static ThreadLocal<Long> threadHierarchical = new ThreadLocal<Long>() ;
+//		private Integer time = 10 ;
+		public static int time =10 ;
 		public HierarchicalLock(long hierarchical) {
 			this.hierarchical = hierarchical;
 		}
@@ -37,8 +39,16 @@ public class HierarchicalLockTest {
 		@Override
 		public void lock() {	// synchronized 加在这里将造成死锁
 			check();
-			// 保证数据的一致性(如果创建层次号相同的对象,这里将可能死锁)
+			
+			// 保证数据的一致性(如果创建层次号相同的对象,这里将可能死锁) 
+			
 			lock.lock();
+			// 这么测试也没问题 hierarchical每个线程独立
+			try {
+				TimeUnit.SECONDS.sleep(time);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			synchronized (this) {
 				Long backup = threadHierarchical.get() ;
 				if(backup == null) backup = Long.MAX_VALUE;
@@ -112,21 +122,31 @@ public class HierarchicalLockTest {
 	public static void main(String[] args) throws InterruptedException {
 		A a = new A(1000);
 		A b = new A(200);
+		b.lock.lock();
 		int i = 10 ;
 		new Thread(()->{
+			System.out.println("A<->B");
 			a.swap(b);
 		}).start();
+		Thread.sleep(100);
+		HierarchicalLock.time/=2;
 		Thread.sleep(200);
+		b.lock.unlock();
 		new Thread(()->{
+			System.out.println("B<->A");
 			b.swap(a);
 		}).start();
-		while(i > 0){
-			Thread.sleep(100);
-			new Thread(()->{
-				a.swap(b);
-			}).start();
-			i--;
-		}
+//		while(i > 0){
+//			Thread.sleep(100);
+//			new Thread(()->{
+//				a.swap(b);
+//			}).start();
+//			new Thread(()->{
+//				b.swap(a);
+//			}).start();
+//
+//			i--;
+//		}
 		
 	}
 }
