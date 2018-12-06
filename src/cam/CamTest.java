@@ -18,7 +18,7 @@ import com.github.sarxos.webcam.WebcamUtils;
 import com.github.sarxos.webcam.util.ImageUtils;
 
 public class CamTest {
-	 private static int    num    = 0;
+	private static int    num    = 0;
 	public static void main(String[] args) {
 		final Webcam webcam = Webcam.getDefault();
         webcam.setViewSize(WebcamResolution.VGA.getSize());
